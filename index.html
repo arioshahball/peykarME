@@ -1,354 +1,2054 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PEYKAR | Cyberpunk OS</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        :root {
-            --neon-blue: #00f3ff;
-            --neon-pink: #ff00ff;
-            --neon-yellow: #f3ff00;
-            --bg-dark: #05050a;
-            --card-bg: #10101a;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>پیکارفارش | سفارش آنلاین پیک</title>
 
-        body {
-            background: var(--bg-dark);
-            color: #e0e0e0;
-            font-family: 'Tahoma', sans-serif;
-            margin: 0;
-            overflow-x: hidden;
-        }
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+crossorigin="">
 
-        /* Cyberpunk Background Effect */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            z-index: -1;
-        }
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Tahoma,Arial,sans-serif
+}
 
-        .section {
-            display: none;
-            padding: 20px;
-            max-width: 500px;
-            margin: 40px auto;
-            background: var(--card-bg);
-            border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 15px var(--neon-blue);
-            border-radius: 5px;
-        }
+body{
+  background:#eefdfc;
+  color:#123b4a;
+  min-height:100vh
+}
 
-        .active { display: block; animation: flicker 0.3s ease-in; }
+button,input,select,textarea{font:inherit}
+button{border:0;cursor:pointer}
+.hidden{display:none!important}
 
-        @keyframes flicker {
-            0% { opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
+header{
+  background:linear-gradient(135deg,#00a9a5,#0877a6);
+  color:#fff;
+  padding:14px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:1000;
+  box-shadow:0 4px 18px #087c8a55
+}
 
-        h1, h2 {
-            color: var(--neon-pink);
-            text-shadow: 0 0 10px var(--neon-pink);
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:22px;
+  font-weight:bold
+}
 
-        input, select, button {
-            background: #000;
-            border: 1px solid var(--neon-blue);
-            color: var(--neon-blue);
-            padding: 12px;
-            margin: 10px 0;
-            width: 100%;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
+.logo{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  background:#fff;
+  color:#008e99;
+  border-radius:13px;
+  font-size:24px
+}
 
-        input:focus { outline: none; border-color: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
+.header-user{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px
+}
 
-        button {
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
+.container{
+  width:min(1150px,94%);
+  margin:25px auto
+}
 
-        button:hover {
-            background: var(--neon-blue);
-            color: #000;
-            box-shadow: 0 0 20px var(--neon-blue);
-        }
+.auth-page{
+  min-height:calc(100vh - 70px);
+  display:grid;
+  place-items:center;
+  padding:25px
+}
 
-        .btn-pink { border-color: var(--neon-pink); color: var(--neon-pink); }
-        .btn-pink:hover { background: var(--neon-pink); color: #000; }
+.auth-card{
+  width:min(470px,100%);
+  background:#fff;
+  padding:30px;
+  border-radius:25px;
+  box-shadow:0 12px 35px #087b8b22
+}
 
-        #map { height: 250px; border: 1px solid var(--neon-blue); margin: 15px 0; }
-        
-        .order-card {
-            border: 1px solid var(--neon-yellow);
-            padding: 10px;
-            margin: 10px 0;
-            background: rgba(243, 255, 0, 0.05);
-        }
+.auth-logo{
+  text-align:center;
+  margin-bottom:22px
+}
 
-        .admin-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #333;
-        }
-    </style>
+.big-logo{
+  width:80px;
+  height:80px;
+  display:grid;
+  place-items:center;
+  margin:auto auto 12px;
+  border-radius:24px;
+  background:#d8fbf8;
+  color:#008e99;
+  font-size:42px
+}
+
+.auth-logo h1{
+  color:#008e99;
+  margin-bottom:8px
+}
+
+.auth-logo p{
+  color:#72818b;
+  font-size:13px
+}
+
+.tabs{
+  display:flex;
+  gap:5px;
+  background:#e9f7f7;
+  border-radius:13px;
+  padding:5px;
+  margin-bottom:20px
+}
+
+.tab{
+  flex:1;
+  padding:11px;
+  border-radius:9px;
+  color:#607784;
+  background:transparent;
+  font-weight:bold
+}
+
+.tab.active{
+  background:#fff;
+  color:#008e99;
+  box-shadow:0 2px 8px #0001
+}
+
+.form-group{margin-bottom:15px}
+
+label{
+  display:block;
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:7px;
+  color:#31505e
+}
+
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #cce4e6;
+  border-radius:11px;
+  outline:none;
+  background:#fff;
+  color:#173d4a
+}
+
+input:focus,select:focus,textarea:focus{
+  border-color:#00a9a5;
+  box-shadow:0 0 0 3px #00a9a522
+}
+
+textarea{
+  resize:vertical;
+  min-height:85px
+}
+
+.btn{
+  padding:10px 15px;
+  border-radius:10px;
+  font-weight:bold;
+  transition:.2s
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+  opacity:.9
+}
+
+.full{width:100%}
+.primary{background:#008fa3;color:#fff}
+.success{background:#10a878;color:#fff}
+.danger{background:#e5484d;color:#fff}
+.warning{background:#ffc857;color:#493700}
+.light{background:#dcfbfa;color:#007c87}
+.gray{background:#e6edf0;color:#36515d}
+.turquoise{background:#20c7bb;color:#063e43}
+
+.title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  flex-wrap:wrap;
+  margin-bottom:20px
+}
+
+.title h2{color:#124b5b}
+
+.title p{
+  color:#71848c;
+  font-size:13px;
+  margin-top:7px
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:20px
+}
+
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:18px;
+  box-shadow:0 5px 20px #087b8b16;
+  margin-bottom:20px
+}
+
+.card h3{
+  color:#155268;
+  font-size:18px;
+  margin-bottom:16px
+}
+
+.card-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:20px
+}
+
+.stat{
+  background:#fff;
+  padding:18px;
+  border-radius:16px;
+  box-shadow:0 5px 18px #087b8b16
+}
+
+.stat strong{
+  display:block;
+  color:#008fa3;
+  font-size:25px;
+  margin-bottom:7px
+}
+
+.stat span{
+  color:#71838d;
+  font-size:12px
+}
+
+.notice{
+  padding:11px;
+  border-radius:10px;
+  margin-bottom:15px;
+  font-size:13px;
+  line-height:1.9
+}
+
+.info{background:#e1f5ff;color:#116187}
+.error{background:#ffebeb;color:#a92727}
+.good{background:#e2faed;color:#137348}
+
+.rules-box{
+  background:#fff8df;
+  color:#624d00;
+  border:1px solid #efd37a;
+  border-radius:12px;
+  padding:13px;
+  font-size:12px;
+  line-height:2;
+  margin:15px 0
+}
+
+.rules-box strong{color:#a32929}
+
+.accept-rules{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  font-size:12px;
+  line-height:1.9;
+  color:#53666f;
+  margin:12px 0 16px
+}
+
+.accept-rules input{
+  width:18px;
+  height:18px;
+  margin-top:3px;
+  accent-color:#008f99
+}
+
+.level-box{
+  background:linear-gradient(135deg,#d9fffb,#e8f5ff);
+  border:1px solid #a9e4df;
+  border-radius:14px;
+  padding:15px;
+  margin-bottom:18px
+}
+
+.level-box strong{
+  color:#008f99;
+  font-size:22px
+}
+
+.role-switch{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:18px
+}
+
+.role-switch .active{
+  background:#008f99;
+  color:#fff
+}
+
+.card-number-box{
+  background:#f1fbfb;
+  color:#17606b;
+  border-radius:10px;
+  padding:10px;
+  font-size:13px;
+  margin-top:10px
+}
+
+.payment-box{
+  background:#e9fff7;
+  border:1px solid #9bdfc8;
+  color:#14684c;
+  border-radius:12px;
+  padding:13px;
+  margin-top:12px;
+  line-height:2;
+  font-size:13px
+}
+
+#map{
+  width:100%;
+  height:390px;
+  border-radius:15px;
+  z-index:1
+}
+
+.map-help{
+  color:#72848d;
+  font-size:12px;
+  line-height:1.9;
+  margin-top:8px
+}
+
+.location-buttons{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px
+}
+
+.location-status{
+  color:#008fa3;
+  font-size:12px;
+  margin-top:8px
+}
+
+.orders-list{
+  display:grid;
+  gap:14px
+}
+
+.order{
+  border:1px solid #dcebec;
+  border-radius:15px;
+  padding:15px;
+  background:#fff
+}
+
+.order-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px
+}
+
+.order-id{
+  color:#008fa3;
+  font-size:13px;
+  font-weight:bold
+}
+
+.order-info{
+  color:#60747d;
+  font-size:13px;
+  line-height:2
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px
+}
+
+.actions .btn{
+  font-size:12px;
+  padding:8px 10px
+}
+
+.badge{
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:bold;
+  white-space:nowrap
+}
+
+.pending{background:#fff4d2;color:#927000}
+.accepted{background:#e3f2ff;color:#146391}
+.picked_up{background:#e9e4ff;color:#6148a8}
+.delivering{background:#e1faef;color:#087344}
+.completed{background:#e8ecee;color:#4b5a60}
+.cancelled{background:#ffe5e5;color:#ad2727}
+
+.empty{
+  text-align:center;
+  border:1px dashed #cbdcde;
+  border-radius:12px;
+  color:#819199;
+  padding:25px;
+  font-size:13px
+}
+
+.admin-box{
+  color:#fff;
+  background:linear-gradient(135deg,#008f91,#0876a1);
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 7px 22px #078b9840
+}
+
+.admin-box h3{
+  color:#fff;
+  margin-bottom:8px
+}
+
+.admin-box p{
+  font-size:13px;
+  line-height:2
+}
+
+.table-wrap{overflow-x:auto}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  min-width:850px;
+  font-size:12px
+}
+
+th,td{
+  padding:12px 8px;
+  border-bottom:1px solid #e4eeee;
+  text-align:right
+}
+
+th{
+  background:#f1fbfb;
+  color:#42626c
+}
+
+td{color:#526b74}
+
+.blocked-row{background:#fff2f2}
+
+.level-control{
+  display:flex;
+  gap:6px;
+  align-items:center;
+  flex-wrap:wrap
+}
+
+.level-control input{
+  width:90px;
+  padding:8px
+}
+
+.footer{
+  color:#81949b;
+  font-size:12px;
+  text-align:center;
+  padding:25px
+}
+
+@media(max-width:760px){
+  .grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  header{padding:12px 3%}
+  .brand{font-size:17px}
+  .logo{width:35px;height:35px}
+  .header-user span{display:none}
+  #map{height:310px}
+}
+</style>
 </head>
+
 <body>
 
-<!-- بخش ورود (Login) -->
-<div id="auth-section" class="section active">
-    <h1>PEYKAR_OS</h1>
-    <p style="text-align:center; color:var(--neon-blue)">System Login Required</p>
-    <input type="text" id="login-phone" placeholder="شماره موبایل">
-    <input type="password" id="login-pass" placeholder="رمز عبور">
-    <button onclick="handleLogin()">اجرای ورود (Login)</button>
-    <button class="btn-pink" onclick="showSection('register-section')">ایجاد حساب جدید</button>
+<header>
+  <div class="brand">
+    <div class="logo">🚚</div>
+    <span>پیکارفارش</span>
+  </div>
+
+  <div id="headerUser" class="header-user hidden">
+    <span id="userLabel"></span>
+    <button class="btn light" onclick="logout()">خروج</button>
+  </div>
+</header>
+
+<main id="authPage" class="auth-page">
+  <section class="auth-card">
+
+    <div class="auth-logo">
+      <div class="big-logo">🚚</div>
+      <h1>پیکارفارش</h1>
+      <p>سفارش سریع، ارسال مطمئن</p>
+    </div>
+
+    <div class="tabs">
+      <button id="loginTab" class="tab active"
+      onclick="switchAuth('login')">ورود</button>
+
+      <button id="registerTab" class="tab"
+      onclick="switchAuth('register')">ثبت‌نام</button>
+    </div>
+
+    <div id="authMessage"></div>
+
+    <form id="loginForm" onsubmit="login(event)">
+      <div class="form-group">
+        <label>شماره موبایل یا نام کاربری</label>
+        <input id="loginUsername" required
+        placeholder="مثلاً 09120000000">
+      </div>
+
+      <div class="form-group">
+        <label>رمز عبور</label>
+        <input id="loginPassword" type="password" required>
+      </div>
+
+      <button class="btn primary full">ورود به پیکارفارش</button>
+    </form>
+
+    <form id="registerForm" class="hidden"
+    onsubmit="register(event)">
+
+      <div class="form-group">
+        <label>نام و نام خانوادگی</label>
+        <input id="registerName" required>
+      </div>
+
+      <div class="form-group">
+        <label>شماره موبایل یا ایمیل</label>
+        <input id="registerUsername" required>
+      </div>
+
+      <div class="form-group">
+        <label>رمز عبور</label>
+        <input id="registerPassword"
+        type="password" minlength="4" required>
+      </div>
+
+      <div class="form-group">
+        <label>نوع حساب</label>
+        <select id="registerRole"
+        onchange="toggleDriverFields()">
+          <option value="customer">فقط مشتری</option>
+          <option value="driver">فقط پیک</option>
+          <option value="both">مشتری و پیک</option>
+        </select>
+      </div>
+
+      <div id="driverCardField"
+      class="form-group hidden">
+
+        <label>شماره کارت پیک</label>
+
+        <input id="registerCardNumber"
+        inputmode="numeric"
+        maxlength="16"
+        placeholder="شماره ۱۶ رقمی کارت">
+
+        <small style="color:#71848c;display:block;margin-top:6px">
+          برای امنیت فقط چهار رقم آخر کارت ذخیره می‌شود.
+        </small>
+      </div>
+
+      <div class="rules-box">
+        <strong>قوانین و سلب مسئولیت</strong><br>
+        این سایت هیچ مجوزی ندارد و ورود شما در این سایت الزامی نیست.
+        می‌توانید به سایت‌های معتبر مراجعه کنید.
+        سایت هیچ مسئولیتی در قبال پول نگرفتن شما، دزدی و موارد مشابه ندارد.
+        با تشکر.
+      </div>
+
+      <label class="accept-rules">
+        <input id="acceptRules" type="checkbox" required>
+        <span>
+          قوانین و سلب مسئولیت را خواندم و با آگاهی کامل می‌پذیرم.
+        </span>
+      </label>
+
+      <button class="btn success full">ساخت حساب</button>
+    </form>
+  </section>
+</main>
+
+<main id="dashboardPage" class="container hidden">
+  <div class="title">
+    <div>
+      <h2 id="dashboardHeading"></h2>
+      <p id="dashboardSubheading"></p>
+    </div>
+
+    <button class="btn gray"
+    onclick="renderDashboard()">بازخوانی اطلاعات</button>
+  </div>
+
+  <div id="dashboardContent"></div>
+</main>
+
+<div class="footer">
+  © ۱۴۰۵ پیکارفارش - تمامی حقوق محفوظ است
 </div>
 
-<!-- بخش ثبت نام (Register) -->
-<div id="register-section" class="section">
-    <h2>ثبت نام در شبکه</h2>
-    <input type="text" id="reg-name" placeholder="نام کاربری">
-    <input type="text" id="reg-phone" placeholder="شماره موبایل">
-    <input type="password" id="reg-pass" placeholder="رمز عبور">
-    <select id="reg-role">
-        <option value="customer">مشتری (Customer)</option>
-        <option value="piker">پیک (Piker)</option>
-    </select>
-    <button onclick="startOTP()">دریافت کد امنیتی</button>
-    <input type="text" id="otp-input" placeholder="کد ۴ رقمی" style="display:none">
-    <button id="verify-btn" onclick="verifyRegister()" style="display:none" class="btn-pink">تایید و ثبت نهایی</button>
-</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+crossorigin=""></script>
 
-<!-- پنل مشتری (Customer Panel) -->
-<div id="customer-panel" class="section">
-    <h2 id="cust-welcome">مشتری</h2>
-    <div id="map"></div>
-    <button onclick="createOrder()">ثبت سفارش جدید</button>
-    <div id="customer-orders"></div>
-    <button class="btn-pink" onclick="logout()">قطع اتصال (Logout)</button>
-</div>
-
-<!-- پنل پیک (Piker Panel) -->
-<div id="piker-panel" class="section">
-    <h2 id="piker-welcome">پیک</h2>
-    <div id="piker-orders-list"></div>
-    <button class="btn-pink" onclick="logout()">قطع اتصال (Logout)</button>
-</div>
-
-<!-- پنل ادمین/طلایی (Admin Panel) -->
-<div id="admin-panel" class="section">
-    <h2 style="color:var(--neon-yellow)">ADMIN_COMMAND_CENTER</h2>
-    <div id="admin-stats"></div>
-    <h3>لیست سیاه (Banned Users)</h3>
-    <div id="blacklist-area"></div>
-    <button class="btn-pink" onclick="logout()">خروج از سیستم مدیریت</button>
-</div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // --- دیتابیس و متغیرهای اصلی ---
-    let users = JSON.parse(localStorage.getItem('peykar_users') || '[]');
-    let orders = JSON.parse(localStorage.getItem('peykar_orders') || '[]');
-    let banned = JSON.parse(localStorage.getItem('peykar_banned') || '[]');
-    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
-    let map;
+const USERS_KEY="peykarefarsh_users";
+const ORDERS_KEY="peykarefarsh_orders";
+const SESSION_KEY="peykarefarsh_session";
 
-    // --- سیستم مدیریت نمایش (SPA) ---
-    function showSection(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        const target = document.getElementById(id);
-        if(target) target.classList.add('active');
+const OWNER_PHONE="09371130903";
+const OWNER_PASSWORD="ari8990";
+
+let users=JSON.parse(localStorage.getItem(USERS_KEY)||"[]");
+let orders=JSON.parse(localStorage.getItem(ORDERS_KEY)||"[]");
+let session=JSON.parse(localStorage.getItem(SESSION_KEY)||"null");
+
+users=users.map(user=>({
+  ...user,
+  level:Math.min(50000,Math.max(1,Number(user.level||1))),
+  blocked:Boolean(user.blocked),
+  rulesAccepted:Boolean(user.rulesAccepted)
+}));
+
+localStorage.setItem(USERS_KEY,JSON.stringify(users));
+
+let map=null;
+let originMarker=null;
+let destinationMarker=null;
+let driverMarker=null;
+let routeLine=null;
+let selectedOrigin=null;
+let selectedDestination=null;
+let mapMode="origin";
+
+const defaultCenter=[35.7219,51.3347];
+
+const statusText={
+  pending:"در انتظار پیک",
+  accepted:"پیک سفارش را قبول کرد",
+  picked_up:"مرسوله دریافت شد",
+  delivering:"در حال ارسال",
+  completed:"تحویل داده شد",
+  cancelled:"لغو شده"
+};
+
+function save(){
+  localStorage.setItem(USERS_KEY,JSON.stringify(users));
+  localStorage.setItem(ORDERS_KEY,JSON.stringify(orders));
+  localStorage.setItem(SESSION_KEY,JSON.stringify(session));
+}
+
+function makeId(prefix){
+  return prefix+"-"+Date.now().toString(36).toUpperCase()+
+  "-"+Math.random().toString(36).slice(2,6).toUpperCase();
+}
+
+function safe(value){
+  return String(value??"")
+  .replaceAll("&","&amp;")
+  .replaceAll("<","&lt;")
+  .replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;")
+  .replaceAll("'","&#039;");
+}
+
+function showMessage(text,type="error"){
+  document.getElementById("authMessage").innerHTML=
+  `<div class="notice ${type}">${safe(text)}</div>`;
+}
+
+function switchAuth(type){
+  const isLogin=type==="login";
+
+  document.getElementById("loginForm")
+  .classList.toggle("hidden",!isLogin);
+
+  document.getElementById("registerForm")
+  .classList.toggle("hidden",isLogin);
+
+  document.getElementById("loginTab")
+  .classList.toggle("active",isLogin);
+
+  document.getElementById("registerTab")
+  .classList.toggle("active",!isLogin);
+
+  document.getElementById("authMessage").innerHTML="";
+}
+
+function toggleDriverFields(){
+  const role=document.getElementById("registerRole").value;
+  const field=document.getElementById("driverCardField");
+  const card=document.getElementById("registerCardNumber");
+  const required=role==="driver"||role==="both";
+
+  field.classList.toggle("hidden",!required);
+  card.required=required;
+
+  if(!required)card.value="";
+}
+
+function normalizeCard(value){
+  return String(value||"").replace(/\D/g,"");
+}
+
+function isValidCardNumber(value){
+  const card=normalizeCard(value);
+
+  if(card.length!==16)return false;
+  if(/^(\d)\1{15}$/.test(card))return false;
+
+  let sum=0;
+
+  for(let i=0;i<16;i++){
+    let digit=Number(card[i]);
+
+    if(i%2===0){
+      digit*=2;
+      if(digit>9)digit-=9;
     }
 
-    // --- منطق احراز هویت ---
-    function startOTP() {
-        const phone = document.getElementById('reg-phone').value;
-        const pass = document.getElementById('reg-pass').value;
-        const name = document.getElementById('reg-name').value;
+    sum+=digit;
+  }
 
-        if(!phone || !pass || !name) return alert("همه فیلدها پر شود!");
-        if(users.find(u => u.phone === phone)) return alert("این شماره قبلاً ثبت شده!");
+  return sum%10===0;
+}
 
-        window.tempOTP = Math.floor(1000 + Math.random() * 9000);
-        alert("کد امنیتی شما در شبکه: " + window.tempOTP);
-        
-        document.getElementById('otp-input').style.display = 'block';
-        document.getElementById('verify-btn').style.display = 'block';
+function register(event){
+  event.preventDefault();
+
+  const name=document.getElementById("registerName").value.trim();
+  const username=document.getElementById("registerUsername").value.trim();
+  const password=document.getElementById("registerPassword").value;
+  const role=document.getElementById("registerRole").value;
+  const accepted=document.getElementById("acceptRules").checked;
+  const card=normalizeCard(
+    document.getElementById("registerCardNumber").value
+  );
+
+  if(!accepted){
+    showMessage("برای ثبت‌نام باید قوانین را بپذیری.");
+    return;
+  }
+
+  if(username===OWNER_PHONE){
+    showMessage("این شماره مخصوص صاحب بلوکارو است.");
+    return;
+  }
+
+  if(users.some(user=>user.username===username)){
+    showMessage("این شماره یا نام کاربری قبلاً ثبت شده است.");
+    return;
+  }
+
+  const needsCard=role==="driver"||role==="both";
+
+  if(needsCard&&!isValidCardNumber(card)){
+    showMessage("شماره کارت واردشده معتبر نیست.");
+    return;
+  }
+
+  const user={
+    id:makeId("USER"),
+    name,
+    username,
+    password,
+    role,
+    activeRole:role==="both"?"customer":role,
+    blocked:false,
+    level:1,
+    rulesAccepted:true,
+    rulesAcceptedAt:new Date().toISOString(),
+    cardLast4:needsCard?card.slice(-4):null,
+    createdAt:new Date().toISOString()
+  };
+
+  users.push(user);
+  save();
+
+  document.getElementById("registerForm").reset();
+  toggleDriverFields();
+  switchAuth("login");
+
+  document.getElementById("loginUsername").value=username;
+  showMessage("حساب با موفقیت ساخته شد. اکنون وارد شوید.","good");
+}
+
+function login(event){
+  event.preventDefault();
+
+  const username=document.getElementById("loginUsername").value.trim();
+  const password=document.getElementById("loginPassword").value;
+
+  if(username===OWNER_PHONE&&password===OWNER_PASSWORD){
+    session={
+      id:"OWNER-BLOKARO",
+      name:"صاحب بلوکارو",
+      username:OWNER_PHONE,
+      role:"admin",
+      blocked:false,
+      level:50000
+    };
+
+    save();
+    showDashboard();
+    return;
+  }
+
+  const user=users.find(item=>
+    item.username===username&&item.password===password
+  );
+
+  if(!user){
+    showMessage("شماره یا رمز عبور اشتباه است.");
+    return;
+  }
+
+  if(user.blocked){
+    showMessage("این حساب توسط صاحب بلوکارو مسدود شده است.");
+    return;
+  }
+
+  session={
+    ...user,
+    level:Math.min(50000,Math.max(1,Number(user.level||1)))
+  };
+
+  save();
+  showDashboard();
+}
+
+function logout(){
+  session=null;
+  save();
+
+  document.getElementById("dashboardPage")
+  .classList.add("hidden");
+
+  document.getElementById("authPage")
+  .classList.remove("hidden");
+
+  document.getElementById("headerUser")
+  .classList.add("hidden");
+}
+
+function getActiveRole(){
+  if(!session)return"customer";
+
+  if(session.role==="both"){
+    return session.activeRole||"customer";
+  }
+
+  return session.role;
+}
+
+function getLevel(userId){
+  const user=users.find(item=>item.id===userId);
+
+  if(!user)return 1;
+
+  return Math.min(
+    50000,
+    Math.max(1,Number(user.level||1))
+  );
+}
+
+function showDashboard(){
+  if(!session)return;
+
+  if(session.role!=="admin"){
+    const current=users.find(user=>user.id===session.id);
+
+    if(!current||current.blocked){
+      logout();
+      showMessage("این حساب مسدود شده است.");
+      return;
     }
 
-    function verifyRegister() {
-        const code = document.getElementById('otp-input').value;
-        if(code != window.tempOTP) return alert("کد اشتباه است!");
+    session={...current};
+    save();
+  }
 
-        const newUser = {
-            name: document.getElementById('reg-name').value,
-            phone: document.getElementById('reg-phone').value,
-            pass: document.getElementById('reg-pass').value,
-            role: document.getElementById('reg-role').value
-        };
+  document.getElementById("authPage")
+  .classList.add("hidden");
 
-        users.push(newUser);
-        localStorage.setItem('peykar_users', JSON.stringify(users));
-        alert("ثبت نام با موفقیت انجام شد.");
-        showSection('auth-section');
+  document.getElementById("dashboardPage")
+  .classList.remove("hidden");
+
+  document.getElementById("headerUser")
+  .classList.remove("hidden");
+
+  let role="مشتری";
+
+  if(session.role==="driver")role="پیک";
+  if(session.role==="both")role="مشتری و پیک";
+  if(session.role==="admin")role="مدیر";
+
+  document.getElementById("userLabel").textContent=
+  `${session.name} | ${role}`;
+
+  renderDashboard();
+}
+
+function renderDashboard(){
+  if(!session)return;
+
+  if(session.role==="admin"){
+    renderAdmin();
+    return;
+  }
+
+  if(getActiveRole()==="driver"){
+    renderDriver();
+  }else{
+    renderCustomer();
+  }
+}
+
+function rolePanel(){
+  if(session.role!=="both")return"";
+
+  const active=getActiveRole();
+
+  return`
+    <section class="card">
+      <div class="level-box">
+        سطح کاربری شما:
+        <strong>Level ${getLevel(session.id)}</strong>
+        <div style="font-size:12px;color:#54717a;margin-top:6px">
+          حداکثر سطح قابل ارتقا: ۵۰۰۰۰
+        </div>
+      </div>
+
+      <div class="role-switch">
+        <button class="btn light ${active==="customer"?"active":""}"
+        onclick="changeRole('customer')">
+          حالت مشتری
+        </button>
+
+        <button class="btn light ${active==="driver"?"active":""}"
+        onclick="changeRole('driver')">
+          حالت پیک
+        </button>
+      </div>
+    </section>
+  `;
+}
+
+function changeRole(role){
+  if(!session||session.role!=="both")return;
+
+  session.activeRole=role;
+  save();
+  renderDashboard();
+}
+
+function renderCustomer(){
+  const mine=orders
+  .filter(order=>order.customerId===session.id)
+  .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+
+  const active=mine.filter(order=>
+    !["completed","cancelled"].includes(order.status)
+  ).length;
+
+  const completed=mine.filter(order=>
+    order.status==="completed"
+  ).length;
+
+  document.getElementById("dashboardHeading").textContent=
+  `سلام ${session.name} 👋`;
+
+  document.getElementById("dashboardSubheading").textContent=
+  "ثبت سفارش جدید و پرداخت بعد از تحویل";
+
+  document.getElementById("dashboardContent").innerHTML=`
+    ${rolePanel()}
+
+    <div class="stats">
+      <div class="stat"><strong>${mine.length}</strong>
+      <span>کل سفارش‌ها</span></div>
+
+      <div class="stat"><strong>${active}</strong>
+      <span>سفارش فعال</span></div>
+
+      <div class="stat"><strong>${completed}</strong>
+      <span>تحویل‌شده</span></div>
+    </div>
+
+    <div class="level-box">
+      سطح کاربری شما:
+      <strong>Level ${getLevel(session.id)}</strong>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h3>ثبت سفارش جدید</h3>
+
+        <div class="notice info">
+          آدرس‌ها را وارد کن و مبدأ و مقصد را روی نقشه مشخص کن.
+        </div>
+
+        <div class="form-group">
+          <label>نوع مرسوله</label>
+          <select id="packageType">
+            <option>مدارک</option>
+            <option>بسته کوچک</option>
+            <option>بسته متوسط</option>
+            <option>غذا</option>
+            <option>سایر</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>شماره تماس گیرنده</label>
+          <input id="receiverPhone"
+          placeholder="مثلاً 09120000000">
+        </div>
+
+        <div class="form-group">
+          <label>آدرس مبدأ</label>
+          <input id="originAddress" required>
+        </div>
+
+        <div class="form-group">
+          <label>آدرس مقصد</label>
+          <input id="destinationAddress" required>
+        </div>
+
+        <div class="form-group">
+          <label>توضیحات</label>
+          <textarea id="description"></textarea>
+        </div>
+
+        <div class="location-buttons">
+          <button class="btn light"
+          onclick="currentLocation('origin')">
+            📍 موقعیت فعلی مبدأ
+          </button>
+
+          <button class="btn light"
+          onclick="currentLocation('destination')">
+            📍 موقعیت فعلی مقصد
+          </button>
+        </div>
+
+        <div id="locationStatus" class="location-status">
+          حالت انتخاب مبدأ فعال است.
+        </div>
+
+        <button class="btn primary full"
+        style="margin-top:15px"
+        onclick="createOrder()">
+          ثبت سفارش
+        </button>
+      </section>
+
+      <section class="card">
+        <h3>انتخاب موقعیت روی نقشه</h3>
+
+        <div id="map"></div>
+
+        <p class="map-help">
+          حالت مبدأ یا مقصد را انتخاب کن، سپس روی نقشه کلیک کن.
+        </p>
+
+        <div class="location-buttons">
+          <button class="btn turquoise"
+          onclick="setMapMode('origin')">
+            انتخاب مبدأ
+          </button>
+
+          <button class="btn turquoise"
+          onclick="setMapMode('destination')">
+            انتخاب مقصد
+          </button>
+
+          <button class="btn warning"
+          onclick="clearPoints()">
+            پاک‌کردن نقاط
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <section class="card">
+      <h3>سفارش‌های من</h3>
+      <div id="customerOrders" class="orders-list"></div>
+    </section>
+  `;
+
+  initMap();
+  renderCustomerOrders(mine);
+}
+
+function renderCustomerOrders(list){
+  const box=document.getElementById("customerOrders");
+
+  if(!list.length){
+    box.innerHTML=
+    `<div class="empty">هنوز سفارشی ثبت نکرده‌ای.</div>`;
+    return;
+  }
+
+  box.innerHTML=list.map(order=>`
+    <div class="order">
+      <div class="order-head">
+        <span class="order-id">${safe(order.id)}</span>
+
+        <span class="badge ${order.status}">
+          ${statusText[order.status]}
+        </span>
+      </div>
+
+      <div class="order-info">
+        <div>📦 ${safe(order.packageType)}</div>
+        <div>📍 مبدأ: ${safe(order.originAddress)}</div>
+        <div>🏁 مقصد: ${safe(order.destinationAddress)}</div>
+        <div>📞 تماس: ${safe(order.receiverPhone||"ثبت نشده")}</div>
+        <div>🚚 پیک: ${safe(order.driverName||"هنوز انتخاب نشده")}</div>
+
+        ${order.driverId?`
+          <div class="card-number-box">
+            💳 چهار رقم آخر کارت پیک:
+            **** **** **** ${safe(getDriverCard(order.driverId))}
+          </div>
+        `:""}
+
+        ${order.description?
+          `<div>📝 ${safe(order.description)}</div>`:""}
+      </div>
+
+      <div class="actions">
+        ${order.driverLocation?
+          `<button class="btn light"
+          onclick="showOrder('${order.id}')">
+            نمایش موقعیت پیک
+          </button>`:""}
+
+        ${["pending","accepted"].includes(order.status)?
+          `<button class="btn danger"
+          onclick="cancelOrder('${order.id}')">
+            لغو سفارش
+          </button>`:""}
+
+        ${order.status==="completed"&&order.paymentStatus!=="paid"?
+          `<button class="btn turquoise"
+          onclick="openPayment('${order.id}')">
+            پرداخت هزینه سفارش
+          </button>`:""}
+      </div>
+
+      ${order.paymentStatus==="paid"?
+        `<div class="payment-box">
+          ✅ پرداخت این سفارش ثبت شده است.
+          <br>
+          مبلغ: ${safe(order.paymentAmount)} تومان
+        </div>`:""}
+    </div>
+  `).join("");
+}
+
+function getDriverCard(driverId){
+  const driver=users.find(user=>user.id===driverId);
+  return driver&&driver.cardLast4?driver.cardLast4:"ثبت نشده";
+}
+
+function renderDriver(){
+  const available=orders.filter(order=>
+    order.status==="pending"
+  );
+
+  const mine=orders
+  .filter(order=>order.driverId===session.id)
+  .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+
+  const active=mine.filter(order=>
+    !["completed","cancelled"].includes(order.status)
+  ).length;
+
+  const completed=mine.filter(order=>
+    order.status==="completed"
+  ).length;
+
+  document.getElementById("dashboardHeading").textContent=
+  `پنل پیک، ${session.name}`;
+
+  document.getElementById("dashboardSubheading").textContent=
+  "قبول سفارش، ارسال موقعیت و تغییر وضعیت سفارش";
+
+  document.getElementById("dashboardContent").innerHTML=`
+    ${rolePanel()}
+
+    <div class="stats">
+      <div class="stat"><strong>${available.length}</strong>
+      <span>سفارش آماده</span></div>
+
+      <div class="stat"><strong>${active}</strong>
+      <span>سفارش فعال من</span></div>
+
+      <div class="stat"><strong>${completed}</strong>
+      <span>تحویل‌شده</span></div>
+    </div>
+
+    <div class="level-box">
+      سطح پیک:
+      <strong>Level ${getLevel(session.id)}</strong>
+    </div>
+
+    <section class="card">
+      <div class="card-title">
+        <h3>سفارش‌های آماده پیک</h3>
+        <button class="btn light"
+        onclick="driverLocation()">
+          📍 ارسال موقعیت من
+        </button>
+      </div>
+
+      <div id="availableOrders" class="orders-list"></div>
+    </section>
+
+    <section class="card">
+      <h3>سفارش‌های من</h3>
+      <div id="driverOrders" class="orders-list"></div>
+    </section>
+
+    <section class="card">
+      <h3>نقشه سفارش</h3>
+      <div id="map"></div>
+    </section>
+  `;
+
+  renderAvailableOrders(available);
+  renderDriverOrders(mine);
+  initMap();
+}
+
+function renderAvailableOrders(list){
+  const box=document.getElementById("availableOrders");
+
+  if(!list.length){
+    box.innerHTML=
+    `<div class="empty">
+      در حال حاضر سفارش جدیدی وجود ندارد.
+    </div>`;
+    return;
+  }
+
+  box.innerHTML=list.map(order=>`
+    <div class="order">
+      <div class="order-head">
+        <span class="order-id">${safe(order.id)}</span>
+        <span class="badge pending">در انتظار پیک</span>
+      </div>
+
+      <div class="order-info">
+        <div>📦 ${safe(order.packageType)}</div>
+        <div>📍 مبدأ: ${safe(order.originAddress)}</div>
+        <div>🏁 مقصد: ${safe(order.destinationAddress)}</div>
+        <div>📞 تماس: ${safe(order.receiverPhone||"ثبت نشده")}</div>
+        ${order.description?
+          `<div>📝 ${safe(order.description)}</div>`:""}
+      </div>
+
+      <div class="actions">
+        <button class="btn light"
+        onclick="showOrder('${order.id}')">
+          نمایش روی نقشه
+        </button>
+
+        <button class="btn success"
+        onclick="acceptOrder('${order.id}')">
+          قبول سفارش
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderDriverOrders(list){
+  const box=document.getElementById("driverOrders");
+
+  if(!list.length){
+    box.innerHTML=
+    `<div class="empty">هنوز سفارشی قبول نکرده‌ای.</div>`;
+    return;
+  }
+
+  box.innerHTML=list.map(order=>`
+    <div class="order">
+      <div class="order-head">
+        <span class="order-id">${safe(order.id)}</span>
+        <span class="badge ${order.status}">
+          ${statusText[order.status]}
+        </span>
+      </div>
+
+      <div class="order-info">
+        <div>📦 ${safe(order.packageType)}</div>
+        <div>📍 ${safe(order.originAddress)}</div>
+        <div>🏁 ${safe(order.destinationAddress)}</div>
+        <div>📞 ${safe(order.receiverPhone||"ثبت نشده")}</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn light"
+        onclick="showOrder('${order.id}')">
+          نمایش مسیر
+        </button>
+
+        ${order.status==="accepted"?
+          `<button class="btn warning"
+          onclick="changeStatus('${order.id}','picked_up')">
+            دریافت مرسوله
+          </button>`:""}
+
+        ${order.status==="picked_up"?
+          `<button class="btn primary"
+          onclick="changeStatus('${order.id}','delivering')">
+            شروع ارسال
+          </button>`:""}
+
+        ${order.status==="delivering"?
+          `<button class="btn success"
+          onclick="changeStatus('${order.id}','completed')">
+            تحویل داده شد
+          </button>`:""}
+
+        ${!["completed","cancelled"].includes(order.status)?
+          `<button class="btn gray"
+          onclick="driverLocation('${order.id}')">
+            ارسال موقعیت
+          </button>`:""}
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderAdmin(){
+  const customers=users.filter(u=>
+    u.role==="customer"||u.role==="both"
+  ).length;
+
+  const drivers=users.filter(u=>
+    u.role==="driver"||u.role==="both"
+  ).length;
+
+  const blocked=users.filter(u=>u.blocked).length;
+
+  document.getElementById("dashboardHeading").textContent=
+  "پنل صاحب بلوکارو";
+
+  document.getElementById("dashboardSubheading").textContent=
+  "مدیریت کاربران، سطح کاربران و سفارش‌ها";
+
+  document.getElementById("dashboardContent").innerHTML=`
+    <div class="admin-box">
+      <h3>پنل اختصاصی صاحب بلوکارو 🛡️</h3>
+      <p>
+        از این قسمت می‌توانی کاربران را بلاک، آزاد، حذف یا تا سطح ۵۰۰۰۰ ارتقا دهی.
+      </p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><strong>${customers}</strong>
+      <span>مشتری</span></div>
+
+      <div class="stat"><strong>${drivers}</strong>
+      <span>پیک</span></div>
+
+      <div class="stat"><strong>${blocked}</strong>
+      <span>مسدود</span></div>
+    </div>
+
+    <section class="card">
+      <h3>مدیریت کاربران و سطح کاربری</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>نام</th>
+              <th>نام کاربری</th>
+              <th>نوع حساب</th>
+              <th>سطح</th>
+              <th>کارت پیک</th>
+              <th>وضعیت</th>
+              <th>عملیات</th>
+            </tr>
+          </thead>
+
+          <tbody id="usersTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>مدیریت سفارش‌ها</h3>
+      <div id="adminOrders" class="orders-list"></div>
+    </section>
+  `;
+
+  renderUsers();
+  renderAdminOrders();
+}
+
+function roleText(role){
+  if(role==="driver")return"پیک";
+  if(role==="both")return"مشتری و پیک";
+  return"مشتری";
+}
+
+function renderUsers(){
+  const box=document.getElementById("usersTable");
+
+  if(!users.length){
+    box.innerHTML=
+    `<tr><td colspan="7">کاربری وجود ندارد.</td></tr>`;
+    return;
+  }
+
+  box.innerHTML=users.map(user=>`
+    <tr class="${user.blocked?"blocked-row":""}">
+      <td>${safe(user.name)}</td>
+      <td>${safe(user.username)}</td>
+      <td>${roleText(user.role)}</td>
+
+      <td>
+        <div class="level-control">
+          <input
+          id="level-${user.id}"
+          type="number"
+          min="1"
+          max="50000"
+          value="${getLevel(user.id)}">
+
+          <button class="btn turquoise"
+          onclick="upgradeLevel('${user.id}')">
+            ثبت
+          </button>
+        </div>
+      </td>
+
+      <td>
+        ${user.cardLast4?
+        `**** **** **** ${safe(user.cardLast4)}`:"ندارد"}
+      </td>
+
+      <td>
+        <span class="badge ${user.blocked?"cancelled":"delivering"}">
+          ${user.blocked?"مسدود":"فعال"}
+        </span>
+      </td>
+
+      <td>
+        <div class="actions">
+          <button class="btn ${user.blocked?"success":"warning"}"
+          onclick="toggleBlock('${user.id}')">
+            ${user.blocked?"آزاد کردن":"بلاک کردن"}
+          </button>
+
+          <button class="btn danger"
+          onclick="deleteUser('${user.id}')">
+            حذف
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function upgradeLevel(userId){
+  const user=users.find(item=>item.id===userId);
+  const input=document.getElementById("level-"+userId);
+
+  if(!user||!input)return;
+
+  let level=Number(input.value);
+
+  if(!Number.isInteger(level)){
+    alert("سطح باید عدد صحیح باشد.");
+    return;
+  }
+
+  level=Math.min(50000,Math.max(1,level));
+  user.level=level;
+
+  if(session.id===userId){
+    session.level=level;
+  }
+
+  save();
+  renderAdmin();
+  alert("سطح کاربر با موفقیت ثبت شد.");
+}
+
+function toggleBlock(userId){
+  const user=users.find(item=>item.id===userId);
+  if(!user)return;
+
+  user.blocked=!user.blocked;
+  save();
+
+  if(user.blocked&&session.id===userId){
+    logout();
+    showMessage("حساب شما توسط صاحب بلوکارو مسدود شد.");
+    return;
+  }
+
+  renderAdmin();
+}
+
+function deleteUser(userId){
+  const user=users.find(item=>item.id===userId);
+  if(!user)return;
+
+  if(!confirm(`حساب ${user.name} حذف شود؟`))return;
+
+  users=users.filter(item=>item.id!==userId);
+
+  orders=orders.filter(order=>
+    order.customerId!==userId&&order.driverId!==userId
+  );
+
+  save();
+  renderAdmin();
+}
+
+function renderAdminOrders(){
+  const box=document.getElementById("adminOrders");
+
+  if(!orders.length){
+    box.innerHTML=
+    `<div class="empty">سفارشی وجود ندارد.</div>`;
+    return;
+  }
+
+  box.innerHTML=orders.map(order=>`
+    <div class="order">
+      <div class="order-head">
+        <span class="order-id">${safe(order.id)}</span>
+        <span class="badge ${order.status}">
+          ${statusText[order.status]}
+        </span>
+      </div>
+
+      <div class="order-info">
+        <div>👤 مشتری: ${safe(order.customerName)}</div>
+        <div>📦 مرسوله: ${safe(order.packageType)}</div>
+        <div>📍 مبدأ: ${safe(order.originAddress)}</div>
+        <div>🏁 مقصد: ${safe(order.destinationAddress)}</div>
+        <div>🚚 پیک: ${safe(order.driverName||"انتخاب نشده")}</div>
+        <div>💰 پرداخت:
+          ${order.paymentStatus==="paid"?"پرداخت شده":"پرداخت نشده"}
+        </div>
+      </div>
+
+      <div class="actions">
+        ${!["completed","cancelled"].includes(order.status)?
+          `<button class="btn danger"
+          onclick="adminCancel('${order.id}')">
+            لغو سفارش
+          </button>`:""}
+
+        <button class="btn gray"
+        onclick="adminDeleteOrder('${order.id}')">
+          حذف سفارش
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function adminCancel(orderId){
+  const order=orders.find(item=>item.id===orderId);
+  if(!order)return;
+
+  order.status="cancelled";
+  save();
+  renderAdmin();
+}
+
+function adminDeleteOrder(orderId){
+  if(!confirm("این سفارش حذف شود؟"))return;
+
+  orders=orders.filter(order=>order.id!==orderId);
+  save();
+  renderAdmin();
+}
+
+function createOrder(){
+  const originAddress=document
+  .getElementById("originAddress").value.trim();
+
+  const destinationAddress=document
+  .getElementById("destinationAddress").value.trim();
+
+  const receiverPhone=document
+  .getElementById("receiverPhone").value.trim();
+
+  const packageType=document
+  .getElementById("packageType").value;
+
+  const description=document
+  .getElementById("description").value.trim();
+
+  if(!originAddress||!destinationAddress){
+    alert("آدرس مبدأ و مقصد را وارد کن.");
+    return;
+  }
+
+  if(!selectedOrigin||!selectedDestination){
+    alert("مبدأ و مقصد را روی نقشه انتخاب کن.");
+    return;
+  }
+
+  orders.push({
+    id:makeId("ORDER"),
+    customerId:session.id,
+    customerName:session.name,
+    packageType,
+    originAddress,
+    destinationAddress,
+    receiverPhone,
+    description,
+    origin:selectedOrigin,
+    destination:selectedDestination,
+    driverId:null,
+    driverName:null,
+    driverLocation:null,
+    status:"pending",
+    paymentStatus:"unpaid",
+    createdAt:new Date().toISOString()
+  });
+
+  save();
+
+  selectedOrigin=null;
+  selectedDestination=null;
+
+  alert("سفارش ثبت شد و برای پیک‌ها ارسال گردید.");
+  renderCustomer();
+}
+
+function acceptOrder(orderId){
+  const order=orders.find(item=>item.id===orderId);
+
+  if(!order||order.status!=="pending"){
+    alert("این سفارش قبلاً توسط پیک دیگری قبول شده است.");
+    renderDashboard();
+    return;
+  }
+
+  order.driverId=session.id;
+  order.driverName=session.name;
+  order.status="accepted";
+  order.updatedAt=new Date().toISOString();
+
+  save();
+
+  alert("سفارش با موفقیت قبول شد.");
+  renderDriver();
+}
+
+function changeStatus(orderId,status){
+  const order=orders.find(item=>item.id===orderId);
+
+  if(!order||order.driverId!==session.id){
+    alert("این سفارش متعلق به شما نیست.");
+    return;
+  }
+
+  order.status=status;
+  order.updatedAt=new Date().toISOString();
+
+  save();
+  renderDriver();
+}
+
+function cancelOrder(orderId){
+  const order=orders.find(item=>
+    item.id===orderId&&item.customerId===session.id
+  );
+
+  if(!order)return;
+
+  if(!confirm("سفارش لغو شود؟"))return;
+
+  order.status="cancelled";
+  save();
+  renderCustomer();
+}
+
+function openPayment(orderId){
+  const order=orders.find(item=>
+    item.id===orderId&&item.customerId===session.id
+  );
+
+  if(!order)return;
+
+  if(order.status!=="completed"){
+    alert("پرداخت فقط بعد از تحویل سفارش امکان‌پذیر است.");
+    return;
+  }
+
+  if(order.paymentStatus==="paid"){
+    alert("این سفارش قبلاً پرداخت شده است.");
+    return;
+  }
+
+  const amount=prompt(
+    "مبلغ سفارش را به تومان وارد کنید:",
+    "50000"
+  );
+
+  if(amount===null)return;
+
+  const numericAmount=Number(
+    String(amount).replace(/,/g,"").trim()
+  );
+
+  if(!Number.isFinite(numericAmount)||numericAmount<=0){
+    alert("مبلغ واردشده معتبر نیست.");
+    return;
+  }
+
+  const card=prompt(
+    "برای پرداخت آزمایشی شماره کارت ۱۶ رقمی را وارد کنید:"
+  );
+
+  if(!isValidCardNumber(card)){
+    alert("شماره کارت معتبر نیست.");
+    return;
+  }
+
+  order.paymentStatus="paid";
+  order.paymentAmount=numericAmount;
+  order.paymentLast4=normalizeCard(card).slice(-4);
+  order.paidAt=new Date().toISOString();
+
+  save();
+
+  alert(
+    "پرداخت آزمایشی با موفقیت انجام شد.\n"+
+    "برای پرداخت واقعی باید درگاه بانکی به سرور متصل شود."
+  );
+
+  renderCustomer();
+}
+
+function initMap(){
+  setTimeout(()=>{
+    const element=document.getElementById("map");
+    if(!element)return;
+
+    if(map){
+      map.remove();
+      map=null;
     }
 
-    function handleLogin() {
-        const phone = document.getElementById('login-phone').value;
-        const pass = document.getElementById('login-pass').value;
+    map=L.map("map").setView(defaultCenter,12);
 
-        // چک کردن لیست سیاه
-        if(banned.includes(phone)) {
-            alert("هشدار: حساب شما مسدود (BANNED) شده است!");
-            return;
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom:19,
+        attribution:"© OpenStreetMap"
+      }
+    ).addTo(map);
+
+    map.on("click",event=>{
+      if(getActiveRole()!=="customer")return;
+
+      const point=[
+        event.latlng.lat,
+        event.latlng.lng
+      ];
+
+      putMarker(mapMode,point);
+      updateLocation();
+    });
+
+    setTimeout(()=>{
+      map.invalidateSize();
+    },300);
+  },100);
+}
+
+function setMapMode(mode){
+  mapMode=mode;
+  updateLocation();
+}
+
+function putMarker(type,point){
+  if(!map)return;
+
+  if(type==="origin"){
+    if(originMarker)originMarker.remove();
+
+    originMarker=L.marker(point)
+    .addTo(map)
+    .bindPopup("مبدأ")
+    .openPopup();
+
+    selectedOrigin=point;
+  }else{
+    if(destinationMarker)destinationMarker.remove();
+
+    destinationMarker=L.marker(point)
+    .addTo(map)
+    .bindPopup("مقصد")
+    .openPopup();
+
+    selectedDestination=point;
+  }
+
+  map.setView(point,14);
+}
+
+function updateLocation(){
+  const box=document.getElementById("locationStatus");
+  if(!box)return;
+
+  let text=mapMode==="origin"
+  ?"حالت انتخاب مبدأ فعال است. "
+  :"حالت انتخاب مقصد فعال است. ";
+
+  if(selectedOrigin)text+="مبدأ مشخص شده است. ";
+  if(selectedDestination)text+="مقصد مشخص شده است.";
+
+  box.textContent=text;
+}
+
+function clearPoints(){
+  selectedOrigin=null;
+  selectedDestination=null;
+
+  if(originMarker)originMarker.remove();
+  if(destinationMarker)destinationMarker.remove();
+
+  originMarker=null;
+  destinationMarker=null;
+  mapMode="origin";
+
+  updateLocation();
+}
+
+function currentLocation(type){
+  if(!navigator.geolocation){
+    alert("موقعیت‌یابی در مرورگر فعال نیست.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    position=>{
+      const point=[
+        position.coords.latitude,
+        position.coords.longitude
+      ];
+
+      putMarker(type,point);
+      updateLocation();
+    },
+    ()=>{
+      alert("دسترسی به موقعیت مکانی داده نشد.");
+    }
+  );
+}
+
+function showOrder(orderId){
+  const order=orders.find(item=>item.id===orderId);
+  if(!order)return;
+
+  const element=document.getElementById("map");
+
+  if(!element){
+    renderDashboard();
+    setTimeout(()=>showOrder(orderId),500);
+    return;
+  }
+
+  setTimeout(()=>{
+    if(!map)return;
+
+    const points=[];
+
+    if(order.origin){
+      L.marker(order.origin)
+      .addTo(map)
+      .bindPopup("مبدأ سفارش");
+
+      points.push(order.origin);
+    }
+
+    if(order.destination){
+      L.marker(order.destination)
+      .addTo(map)
+      .bindPopup("مقصد سفارش");
+
+      points.push(order.destination);
+    }
+
+    if(driverMarker)driverMarker.remove();
+
+    if(order.driverLocation){
+      driverMarker=L.marker(order.driverLocation)
+      .addTo(map)
+      .bindPopup("موقعیت پیک")
+      .openPopup();
+
+      points.push(order.driverLocation);
+    }
+
+    if(routeLine)routeLine.remove();
+
+    if(order.origin&&order.destination){
+      routeLine=L.polyline(
+        [order.origin,order.destination],
+        {
+          color:"#00a9a5",
+          weight:5,
+          dashArray:"8,8"
         }
-
-        // بررسی ادمین (حساب طلایی)
-        if(phone === '09371130903') {
-            currentUser = { name: 'Admin', phone: '09371130903', role: 'admin' };
-            completeLogin();
-            return;
-        }
-
-        // بررسی کاربران عادی
-        const user = users.find(u => u.phone === phone && u.pass === pass);
-        if(user) {
-            currentUser = user;
-            completeLogin();
-        } else {
-            alert("خطا در احراز هویت! شماره یا رمز اشتباه است.");
-        }
+      ).addTo(map);
     }
 
-    function completeLogin() {
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        loadDashboard();
+    if(points.length){
+      map.fitBounds(points,{padding:[30,30]});
     }
 
-    function loadDashboard() {
-        if(!currentUser) return;
+    map.invalidateSize();
+  },300);
+}
 
-        if(currentUser.role === 'admin') {
-            showSection('admin-panel');
-            renderAdmin();
-        } else if(currentUser.role === 'customer') {
-            showSection('customer-panel');
-            document.getElementById('cust-welcome').innerText = `خوش آمدید ${currentUser.name}`;
-            initMap();
-            renderCustomerOrders();
-        } else if(currentUser.role === 'piker') {
-            showSection('piker-panel');
-            document.getElementById('piker-welcome').innerText = `پیک: ${currentUser.name}`;
-            renderPikerOrders();
-        }
-    }
+function driverLocation(orderId=null){
+  if(!navigator.geolocation){
+    alert("موقعیت‌یابی در دسترس نیست.");
+    return;
+  }
 
-    // --- منطق مشتری (Customer) ---
-    function initMap() {
-        if(!map) {
-            map = L.map('map').setView([35.6892, 51.3890], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        }
-    }
+  navigator.geolocation.getCurrentPosition(
+    position=>{
+      const point=[
+        position.coords.latitude,
+        position.coords.longitude
+      ];
 
-    function createOrder() {
-        const newOrder = {
-            id: Date.now(),
-            customerPhone: currentUser.phone,
-            customerName: currentUser.name,
-            status: 'pending', // pending, active, delivered
-            lat: 35.6892,
-            lng: 51.3890
-        };
-        orders.push(newOrder);
-        localStorage.setItem('peykar_orders', JSON.stringify(orders));
-        alert("سفارش با موفقیت در شبکه ثبت شد!");
-        renderCustomerOrders();
-    }
+      let order;
 
-    function renderCustomerOrders() {
-        const container = document.getElementById('customer-orders');
-        const myOrders = orders.filter(o => o.customerPhone === currentUser.phone);
-        container.innerHTML = "<h3>سفارشات من:</h3>";
-        myOrders.forEach(o => {
-            container.innerHTML += `<div class="order-card">ID: ${o.id} | وضعیت: ${o.status}</div>`;
-        });
-    }
+      if(orderId){
+        order=orders.find(item=>
+          item.id===orderId&&item.driverId===session.id
+        );
+      }else{
+        order=orders.find(item=>
+          item.driverId===session.id&&
+          !["completed","cancelled"].includes(item.status)
+        );
+      }
 
-    // --- منطق پیک (Piker) ---
-    function renderPikerOrders() {
-        const container = document.getElementById('piker-orders-list');
-        const pendingOrders = orders.filter(o => o.status === 'pending');
-        container.innerHTML = "<h3>سفارشات در دسترس:</h3>";
-        if(pendingOrders.length === 0) container.innerHTML += "<p>سفارش جدیدی موجود نیست.</p>";
-        
-        pendingOrders.forEach(o => {
-            container.innerHTML += `
-                <div class="order-card">
-                    مشتری: ${o.customerName}<br>
-                    <button onclick="acceptOrder(${o.id})">پذیرش سفارش</button>
-                </div>`;
-        });
-    }
+      if(!order){
+        alert("سفارش فعال پیدا نشد.");
+        return;
+      }
 
-    function acceptOrder(orderId) {
-        const orderIndex = orders.findIndex(o => o.id === orderId);
-        orders[orderIndex].status = 'active';
-        orders[orderIndex].pikerPhone = currentUser.phone;
-        localStorage.setItem('peykar_orders', JSON.stringify(orders));
-        alert("سفارش پذیرفته شد!");
-        renderPikerOrders();
-    }
+      order.driverLocation=point;
+      order.locationUpdatedAt=new Date().toISOString();
 
-    // --- منطق ادمین (Admin/Golden Account) ---
-    function renderAdmin() {
-        const blacklistDiv = document.getElementById('blacklist-area');
-        const statsDiv = document.getElementById('admin-stats');
-        
-        statsDiv.innerHTML = `کاربران: ${users.length} | سفارشات: ${orders.length}`;
-        
-        blacklistDiv.innerHTML = "";
-        banned.forEach((phone, index) => {
-            blacklistDiv.innerHTML += `
-                <div class="admin-item">
-                    <span>${phone}</span>
-                    <button style="width:auto; padding:2px 10px" onclick="unban('${phone}')">بازگرداندن</button>
-                </div>`;
-        });
+      save();
+      alert("موقعیت پیک ثبت شد.");
+      showOrder(order.id);
+    },
+    ()=>{
+      alert("دسترسی به موقعیت مکانی داده نشد.");
     }
+  );
+}
 
-    // (در دنیای واقعی اینجا تابع Ban هم می‌گذاریم، فعلاً فقط Unban)
-    function unban(phone) {
-        banned = banned.filter(p => p !== phone);
-        localStorage.setItem('peykar_banned', JSON.stringify(banned));
-        renderAdmin();
-    }
+setInterval(()=>{
+  if(!session)return;
 
-    // --- خروج ---
-    function logout() {
-        localStorage.removeItem('currentUser');
-        location.reload();
-    }
+  users=JSON.parse(localStorage.getItem(USERS_KEY)||"[]");
+  orders=JSON.parse(localStorage.getItem(ORDERS_KEY)||"[]");
 
-    // لود اولیه
-    if(currentUser) {
-        loadDashboard();
+  if(session.role!=="admin"){
+    const current=users.find(user=>user.id===session.id);
+
+    if(!current||current.blocked){
+      logout();
+      return;
     }
+  }
+
+  renderDashboard();
+},3000);
+
+window.addEventListener("storage",()=>{
+  users=JSON.parse(localStorage.getItem(USERS_KEY)||"[]");
+  orders=JSON.parse(localStorage.getItem(ORDERS_KEY)||"[]");
+
+  if(session)renderDashboard();
+});
+
+if(session){
+  showDashboard();
+}
 </script>
 
 </body>
